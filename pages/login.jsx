@@ -1,5 +1,4 @@
 import { IconButton, InputAdornment, TextField, Tooltip } from '@mui/material'
-import Image from 'next/image'
 import React, { useState } from 'react'
 import { Blob1, Blob2 } from '../public/svg/Blobs'
 import Visibility from '@mui/icons-material/Visibility'
