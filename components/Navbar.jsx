@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { IconButton, Menu, MenuItem } from '@mui/material'
 
@@ -46,7 +46,7 @@ function Navbar () {
                 </Menu>
               </>
             )
-          : router.pathname !== '/auth/login'
+          : router.pathname === '/'
             ? (
           <>
             <Link href='/auth/login'>
@@ -54,9 +54,11 @@ function Navbar () {
                 LOG IN
               </button>
             </Link>
-            <button className='primary-button px-8 py-3 shadow-md'>
-              SIGN UP
-            </button>
+            <Link href='/auth/signup'>
+              <button className='primary-button px-8 py-3 shadow-md'>
+                SIGN UP
+              </button>
+            </Link>
           </>
               )
             : null}
