@@ -49,12 +49,11 @@ function Navbar () {
           : router.pathname !== '/auth/login'
             ? (
           <>
-            <button
-              className='shadow-md px-8 py-3 rounded-full border border-solid border-pf-blue border-opacity-30'
-              onClick={() => signIn()}
-            >
-              LOG IN
-            </button>
+            <Link href='/auth/login'>
+              <button className='shadow-md px-8 py-3 rounded-full border border-solid border-pf-blue border-opacity-30'>
+                LOG IN
+              </button>
+            </Link>
             <button className='primary-button px-8 py-3 shadow-md'>
               SIGN UP
             </button>
