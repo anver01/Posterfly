@@ -9,11 +9,12 @@ import { useRouter } from 'next/router'
 
 function Login ({ posts }) {
   const [creds, setCreds] = useState({
-    username: '',
+    email: '',
     password: '',
     rememberMe: true
   })
   const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState('')
   const { data: session } = useSession()
   const router = useRouter()
 
@@ -35,9 +36,11 @@ function Login ({ posts }) {
     }
   }
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
-    signIn('credentials', { ...creds })
+    const response = await signIn('credentials', { ...creds, redirect: false })
+    if (!response.ok) setError('Email/Username not found. Please sign up.')
+    if (response.ok && response.error) setError('Email/Password is incorrect. Please try again.')
   }
 
   return (
@@ -87,12 +90,15 @@ function Login ({ posts }) {
           <span className='text-pf-black text-opacity-40'>or</span>
           <hr className='w-2/3 m-auto my-4' />
         </div>
+        <span className='text-pf-red opacity-60 text-sm my-1 relative -top-2'>
+          {error}
+        </span>
         <form className='flex flex-col gap-4' onSubmit={handleLogin}>
           <TextField
-            label="Username"
+            label="Email"
             variant="outlined"
-            name='username'
-            value={creds.username}
+            name='email'
+            value={creds.email}
             onChange={handleInput}
           />
           <TextField

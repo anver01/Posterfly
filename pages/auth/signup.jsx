@@ -29,7 +29,7 @@ function SignUp () {
 
   const handleLogin = (e) => {
     e.preventDefault()
-    signIn('credentials', { ...creds })
+    signIn('credentials', { ...creds, redirect: false, newUser: true })
   }
 
   return (

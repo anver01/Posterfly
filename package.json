@@ -17,10 +17,17 @@
     "@mui/material": "^5.8.0",
     "@next-auth/dynamodb-adapter": "^1.0.3",
     "@supabase/supabase-js": "^1.35.3",
+    "axios": "^0.27.2",
+    "bcrypt": "^5.0.1",
+    "mysql2": "^2.3.3",
     "next": "12.1.6",
     "node-json-db": "^1.5.0",
+    "pg": "^8.7.3",
+    "pg-hstore": "^2.3.4",
     "react": "18.1.0",
-    "react-dom": "18.1.0"
+    "react-dom": "18.1.0",
+    "sequelize": "^6.19.2",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.7",

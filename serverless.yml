@@ -13,28 +13,39 @@ resources:
         BillingMode: PAY_PER_REQUEST
         TableName: posterfly-auth
         AttributeDefinitions:
-          - AttributeName: pk
+          - AttributeName: email
             AttributeType: S
-          - AttributeName: sk
+          - AttributeName: provider
             AttributeType: S
-          - AttributeName: GSI1PK
+          - AttributeName: providerId
             AttributeType: S
-          - AttributeName: GSI1SK
+          - AttributeName: username
+            AttributeType: S
+          - AttributeName: userId
             AttributeType: S
         KeySchema:
-          - AttributeName: pk
+          - AttributeName: email
             KeyType: HASH
-          - AttributeName: sk
+          - AttributeName: provider
             KeyType: RANGE
         GlobalSecondaryIndexes:
-          - IndexName: GSI1
+          - IndexName: providerId-provider-index
             Projection:
               ProjectionType: ALL
             KeySchema:
-              - AttributeName: GSI1PK
+              - AttributeName: providerId
                 KeyType: HASH
-              - AttributeName: GSI1SK
+              - AttributeName: provider
                 KeyType: RANGE
-        TimeToLiveSpecification:
-          AttributeName: expires
-          Enabled: true
+          - IndexName: username-index
+            Projection:
+              ProjectionType: ALL
+            KeySchema:
+              - AttributeName: username
+                KeyType: HASH
+          - IndexName: userId-index
+            Projection:
+              ProjectionType: ALL
+            KeySchema:
+              - AttributeName: userId
+                KeyType: HASH
