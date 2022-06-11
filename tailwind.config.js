@@ -8,7 +8,12 @@ module.exports = {
       'pf-grite': '#f1faee',
       'pf-lt-blue': '#a8dadc',
       'pf-indigo': '#457b9d',
-      'pf-blue': '#1d3557'
+      'pf-blue': '#1d3557',
+      'pf-link-blue': '#148EFF',
+      'pf-post-color-mint': '#B4F8C8',
+      'pf-post-color-tiffany-blue': '#A0E7E5',
+      'pf-post-color-hot-pink': '#FFAEBC',
+      'pf-post-color-yellow': '#FBE7C6'
     },
     extend: {
       backgroundImage: {

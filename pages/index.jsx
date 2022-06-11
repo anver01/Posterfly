@@ -1,7 +1,26 @@
 import React from 'react'
 import Image from 'next/image'
+import { useSession } from 'next-auth/react'
+import ApplicationHome from '../components/ApplicationHome'
+import { CircularProgress } from '@mui/material'
+import { useRouter } from 'next/router'
 
 function Home () {
+  const { data: session, status } = useSession()
+  const router = useRouter()
+
+  if (status === 'loading') {
+    return (
+      <div className='w-full h-screen absolute top-0 left-0 bg-pf-white z-50 grid place-items-center'>
+        <CircularProgress/>
+      </div>
+    )
+  }
+
+  if (session && !session.username) router.push('/onboarding')
+
+  if (session) return <ApplicationHome session={session} />
+
   return (
     <div>
       {/* Section 1 */}

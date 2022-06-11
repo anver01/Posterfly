@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { IconButton, Menu, MenuItem } from '@mui/material'
 
@@ -24,6 +24,8 @@ function Navbar () {
         {session
           ? (
               <>
+              <div className='flex items-center gap-4'>
+                <span>Hello! {session.username}</span>
                 <IconButton size='small' onClick={e => setMenuAnchor(e.currentTarget)}>
                   <AccountCircleIcon style={{ width: 40, height: 40 }}/>
                 </IconButton>
@@ -37,27 +39,29 @@ function Navbar () {
                 >
                   <MenuItem
                     onClick={() => {
-                      signOut()
+                      signOut({ callbackUrl: '/' })
                       setMenuAnchor(null)
                     }}
                   >
                     Logout
                   </MenuItem>
                 </Menu>
+              </div>
               </>
             )
-          : router.pathname !== '/auth/login'
+          : router.pathname === '/'
             ? (
           <>
-            <button
-              className='shadow-md px-8 py-3 rounded-full border border-solid border-pf-blue border-opacity-30'
-              onClick={() => signIn()}
-            >
-              LOG IN
-            </button>
-            <button className='primary-button px-8 py-3 shadow-md'>
-              SIGN UP
-            </button>
+            <Link href='/auth/login'>
+              <button className='shadow-md px-8 py-3 rounded-full border border-solid border-pf-blue border-opacity-30'>
+                LOG IN
+              </button>
+            </Link>
+            <Link href='/auth/signup'>
+              <button className='primary-button px-8 py-3 shadow-md'>
+                SIGN UP
+              </button>
+            </Link>
           </>
               )
             : null}
