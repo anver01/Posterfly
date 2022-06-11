@@ -1,7 +1,7 @@
 const Post = require('./models/Post')
 
-async function getAllPostForUser (userId) {
-  const posts = await Post.findAll({ where: { author: userId } })
+async function getAllPostForUser (username) {
+  const posts = await Post.findAll({ where: { author: username } })
   return posts && posts.map(post => post.toJSON())
 }
 

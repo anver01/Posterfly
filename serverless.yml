@@ -15,37 +15,19 @@ resources:
         AttributeDefinitions:
           - AttributeName: email
             AttributeType: S
-          - AttributeName: provider
-            AttributeType: S
-          - AttributeName: providerId
+          - AttributeName: sk
             AttributeType: S
           - AttributeName: username
-            AttributeType: S
-          - AttributeName: userId
             AttributeType: S
         KeySchema:
           - AttributeName: email
             KeyType: HASH
-          - AttributeName: provider
+          - AttributeName: sk
             KeyType: RANGE
         GlobalSecondaryIndexes:
-          - IndexName: providerId-provider-index
-            Projection:
-              ProjectionType: ALL
-            KeySchema:
-              - AttributeName: providerId
-                KeyType: HASH
-              - AttributeName: provider
-                KeyType: RANGE
           - IndexName: username-index
             Projection:
               ProjectionType: ALL
             KeySchema:
               - AttributeName: username
-                KeyType: HASH
-          - IndexName: userId-index
-            Projection:
-              ProjectionType: ALL
-            KeySchema:
-              - AttributeName: userId
                 KeyType: HASH

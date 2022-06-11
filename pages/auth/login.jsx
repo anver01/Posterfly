@@ -6,12 +6,13 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import { getPosts } from '../../utility/getPosts'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 function Login ({ posts }) {
   const [creds, setCreds] = useState({
     email: '',
-    password: '',
-    rememberMe: true
+    password: ''
+    // rememberMe: true
   })
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
@@ -19,7 +20,7 @@ function Login ({ posts }) {
   const router = useRouter()
 
   useEffect(() => {
-    if (session) router.push('/')
+    if (session) router.push('/onboarding')
   }, [session])
 
   const handleInput = (e) => {
@@ -123,10 +124,10 @@ function Login ({ posts }) {
             }}
           />
           <div className='flex items-center justify-between gap-8 select-none'>
-            <span className='flex items-center gap-1'>
+            {/* <span className='flex items-center gap-1'>
               <input type="checkbox" name="rememberMe" id="rememberMe" checked={creds.rememberMe} onChange={handleInput} />
               <label htmlFor="rememberMe" className='text-sm'>Remember Me</label>
-            </span>
+            </span> */}
             <span className='text-sm text-pf-indigo'>
               Forgot Password?
             </span>
@@ -135,6 +136,7 @@ function Login ({ posts }) {
             LOGIN
           </button>
         </form>
+        <span className='text-sm text-center'>Do not have an account? <span className='text-pf-link-blue font-medium'><Link href='/auth/signup'>Sign Up</Link></span></span>
       </div>
     </div>
   )

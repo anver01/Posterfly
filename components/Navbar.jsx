@@ -24,6 +24,8 @@ function Navbar () {
         {session
           ? (
               <>
+              <div className='flex items-center gap-4'>
+                <span>Hello! {session.username}</span>
                 <IconButton size='small' onClick={e => setMenuAnchor(e.currentTarget)}>
                   <AccountCircleIcon style={{ width: 40, height: 40 }}/>
                 </IconButton>
@@ -37,13 +39,14 @@ function Navbar () {
                 >
                   <MenuItem
                     onClick={() => {
-                      signOut()
+                      signOut({ callbackUrl: '/' })
                       setMenuAnchor(null)
                     }}
                   >
                     Logout
                   </MenuItem>
                 </Menu>
+              </div>
               </>
             )
           : router.pathname === '/'

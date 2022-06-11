@@ -1,9 +1,8 @@
 import NextAuth from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { createHash } from 'crypto'
 import bcrypt from 'bcrypt'
-import { createUser, getUserByPrimaryKey } from '../../../utility/dynamoService'
+import { getOrCreateAccount, getOrCreateUser } from '../../../utility/dynamoService'
 
 export default NextAuth({
   providers: [
@@ -14,66 +13,49 @@ export default NextAuth({
     CredentialsProvider({
       async authorize (credentials) {
         try {
-          // const password = createHash('sha256').update(credentials.password).digest('hex')
-          let response
-          if (credentials.newUser) {
-            const passwordHash = await bcrypt.hash(credentials.password, parseInt(process.env.SALT_ROUNDS))
-            await createUser({
-              email: credentials.email,
-              provider: 'credentials',
-              username: credentials.username,
-              passwordHash
-            })
-            return { email: credentials.email, provider: 'credentials' }
-          } else {
-            response = await getUserByPrimaryKey({
-              email: credentials.email,
-              provider: 'credentials'
-            })
+          const userDetails = {
+            email: credentials.email,
+            sk: 'USER',
+            username: credentials.username
           }
-          const user = response
-          const passwordCompare = await bcrypt.compare(credentials.password, user.password)
-          if (!user) return null
-          if (user && !passwordCompare) throw new Error('Password is incorrect')
-          else return user
+          const passwordHash = await bcrypt.hash(credentials.password, parseInt(process.env.SALT_ROUNDS))
+          const accountDetails = {
+            email: credentials.email,
+            password: passwordHash
+          }
+          const response = await Promise.allSettled([getOrCreateUser(userDetails), getOrCreateAccount(accountDetails, 'credentials')])
+          const passwordCompare = await bcrypt.compare(credentials.password, response[1].value.password)
+          if (!response[0].value) return null
+          if (response[0].value && !passwordCompare) throw new Error('Password is incorrect')
+          else return response[0].value
         } catch (e) {
-          console.log(e)
+          console.error(e)
         }
       }
     })
   ],
   callbacks: {
-    async signIn ({ user, account }) {
-      if (account.provider === 'google') {
-        const dbResponse = await getUserByPrimaryKey({
-          email: user.email,
-          provider: 'google'
-        })
-        if (!dbResponse) {
-          const response = await createUser({
-            email: user.email,
-            provider: 'google',
-            providerId: user.id,
-            name: user.name
-          })
-          if (response) return true
-        } else return true
-      } else return true
-    },
     async jwt ({ token, account, user }) {
-      // if (account.provider === 'google') {
-      //   const response = await getUserByPrimaryKey({
-      //     email: user.email,
-      //     provider: 'google'
-      //   })
-      //   token.userId = response.userId
-      // } else {
-      //   token.userId = user.userId
-      // }
+      const userDetails = {
+        email: user?.email,
+        sk: 'USER'
+      }
+      if (user && account && account.provider === 'google') {
+        const accountDetails = {
+          email: user.email,
+          name: user.name,
+          providerId: user.id
+        }
+        const response = await Promise.allSettled([getOrCreateUser(userDetails), getOrCreateAccount(accountDetails, 'google')])
+        token.username = response[0].value.username
+      }
+      if (user && account && account.provider === 'credentials') {
+        token.username = user.username
+      }
       return token
     },
-    async session ({ session, token, user }) {
-      // session.userId = token.userId
+    async session ({ session, token }) {
+      session.username = token.username
       return session
     }
   },

@@ -5,6 +5,7 @@ import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 function SignUp () {
   const [creds, setCreds] = useState({
@@ -17,7 +18,7 @@ function SignUp () {
   const router = useRouter()
 
   useEffect(() => {
-    if (session) router.push('/')
+    if (session) router.push('/onboarding')
   }, [session])
 
   const handleInput = (e) => {
@@ -27,9 +28,10 @@ function SignUp () {
     })
   }
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
-    signIn('credentials', { ...creds, redirect: false, newUser: true })
+    const response = await signIn('credentials', { ...creds, redirect: false, newUser: true })
+    console.log(response)
   }
 
   return (
@@ -101,6 +103,7 @@ function SignUp () {
             SIGN UP
           </button>
         </form>
+        <span className='text-sm text-center'>Already have an account? <span className='text-pf-link-blue font-medium'><Link href='/auth/login'>Login</Link></span></span>
       </div>
     </div>
   )

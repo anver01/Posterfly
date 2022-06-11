@@ -3,9 +3,11 @@ import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import ApplicationHome from '../components/ApplicationHome'
 import { CircularProgress } from '@mui/material'
+import { useRouter } from 'next/router'
 
 function Home () {
   const { data: session, status } = useSession()
+  const router = useRouter()
 
   if (status === 'loading') {
     return (
@@ -14,6 +16,8 @@ function Home () {
       </div>
     )
   }
+
+  if (session && !session.username) router.push('/onboarding')
 
   if (session) return <ApplicationHome session={session} />
 
