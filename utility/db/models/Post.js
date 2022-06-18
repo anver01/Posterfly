@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require('sequelize')
 const sequelize = require('../dbConnection')
+const UserActivity = require('./UserActivity')
 
 class Post extends Model {}
 
@@ -27,5 +28,8 @@ Post.init({
   sequelize,
   modelName: 'Post'
 })
+
+Post.hasMany(UserActivity, { foreignKey: 'postId' })
+UserActivity.belongsTo(Post, { foreignKey: 'postId' })
 
 module.exports = Post
