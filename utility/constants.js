@@ -7,4 +7,9 @@ const mysqlConfig = {
   host: process.env.DB_HOST
 }
 
-module.exports = { mysqlConfig }
+const USER_ACTIONS = {
+  LIKE: 'like',
+  UNLIKE: 'unlike'
+}
+
+module.exports = { mysqlConfig, USER_ACTIONS }
