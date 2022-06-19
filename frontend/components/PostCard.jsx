@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import { IconButton, Menu, MenuItem } from '@mui/material'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
@@ -8,29 +8,51 @@ import { useSession } from 'next-auth/react'
 import { USER_ACTIONS } from '../utility/constants'
 
 function checkFavorite (activities, username) {
-  return activities.find(act => act.user === username)?.action === USER_ACTIONS.LIKE
+  return activities?.find(act => act.user === username)?.action === USER_ACTIONS.LIKE
 }
 
-function PostCard ({ postData }) {
+function PostCard ({ postData, socket }) {
   const { data: session } = useSession()
-  const [favorite, setFavorite] = useState(checkFavorite(postData.UserActivities, session.username))
+  const [data, setData] = useState(postData)
   const [menuAnchor, setMenuAnchor] = useState(null)
   const menuOpen = Boolean(menuAnchor)
 
+  useEffect(() => {
+    setData(postData)
+  }, [postData])
+
+  const favorite = useMemo(() => {
+    return checkFavorite(data.UserActivities, session.username)
+  }, [data])
+
+  const likeCount = useMemo(() => {
+    return data.UserActivities?.filter(activity => activity.action === 'like').length
+  }, [data])
+
+  socket.on('post-update', action => {
+    if (action.postId === postData.id) {
+      const activitiesTemp = postData.UserActivities || []
+      if (!activitiesTemp.length) activitiesTemp.push(action)
+      else {
+        const activityToUpdate = activitiesTemp.findIndex(activity => activity.user === action.user)
+        if (activityToUpdate < 0) activitiesTemp.push(action)
+        else activitiesTemp.splice(activityToUpdate, 1, action)
+      }
+      setData({ ...postData, UserActivities: activitiesTemp })
+    }
+  })
+
   const handleLike = () => {
-    setFavorite(prev => !prev)
     axios.put('/api/posts/updatePost', {
       postId: postData.id,
       user: session.username,
       action: !favorite ? USER_ACTIONS.LIKE : USER_ACTIONS.UNLIKE
     })
-      .then(res => console.log(res.data))
+      .then(res => {
+        socket.emit('post-action', res.data)
+      })
       .catch(err => console.error(err))
   }
-
-  const likeCount = useMemo(() => {
-    return postData.UserActivities.filter(activity => activity.action === 'like').length
-  }, [postData])
 
   return (
     <div className='rounded-lg p-6 pb-3 max-w-md flex flex-col bg-pf-grite relative' style={{ minWidth: 500 }}>
@@ -39,7 +61,7 @@ function PostCard ({ postData }) {
           <MoreHorizIcon/>
         </IconButton>
       </span>
-      <p className='text-pf-black mb-2'>{postData.post}</p>
+      <p className='text-pf-black mb-2'>{data.post}</p>
       <div className='flex items-center justify-between'>
         <span>
           <IconButton size='small' onClick={handleLike} style={{ position: 'relative', left: '-6px' }}>
@@ -47,7 +69,7 @@ function PostCard ({ postData }) {
           </IconButton>
           <span className='-ml-1'>{likeCount}</span>
         </span>
-        <span className='text-pf-black text-opacity-50 ml-auto'>{postData.author}</span>
+        <span className='text-pf-black text-opacity-50 ml-auto'>{data.author}</span>
       </div>
       <Menu
           anchorEl={menuAnchor}

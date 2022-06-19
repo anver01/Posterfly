@@ -1,0 +1,29 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "This is the server side for the posterfly social app",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hugher256/Posterfly.git"
+  },
+  "keywords": [
+    "Social",
+    "Media"
+  ],
+  "author": "Anshit Verma",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Hugher256/Posterfly/issues"
+  },
+  "homepage": "https://github.com/Hugher256/Posterfly#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  },
+  "dependencies": {
+    "socket.io": "^4.5.1"
+  }
+}

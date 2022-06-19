@@ -4,8 +4,10 @@ import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
 import '../styles/global.css'
 import Head from 'next/head'
+import { io } from 'socket.io-client'
 
 function MyApp ({ Component, pageProps: { session, ...pageProps } }) {
+  const socket = io(process.env.NEXT_APP_WEBSOCKET_URL || 'http://localhost:5000')
   return (
     <SessionProvider session={session}>
       <Head>
@@ -17,7 +19,7 @@ function MyApp ({ Component, pageProps: { session, ...pageProps } }) {
         <title>Posterfly</title>
       </Head>
       <Navbar/>
-      <Component {...pageProps} />
+      <Component {...pageProps} socket={socket} />
       <Footer/>
     </SessionProvider>
   )

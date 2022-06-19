@@ -5,7 +5,7 @@ import ApplicationHome from '../components/ApplicationHome'
 import { CircularProgress } from '@mui/material'
 import { useRouter } from 'next/router'
 
-function Home () {
+function Home ({ socket }) {
   const { data: session, status } = useSession()
   const router = useRouter()
 
@@ -19,7 +19,7 @@ function Home () {
 
   if (session && !session.username) router.push('/onboarding')
 
-  if (session) return <ApplicationHome session={session} />
+  if (session) return <ApplicationHome session={session} socket={socket} />
 
   return (
     <div>

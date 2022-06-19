@@ -1,20 +1,18 @@
-const { Sequelize } = require('./dbConnection')
 const Post = require('./models/Post')
 const UserActivity = require('./models/UserActivity')
 
-async function getAllPostForUser (username) {
+async function getAllPosts ({ offset = 0 }) {
   const posts = await Post.findAll({
-    where: {
-      author: username
-    },
     include: [{
       model: UserActivity,
       // attributes: {
       //   include: [[Sequelize.literal(`(Select * from UserActivities where UserActivities.user = ${username})`), 'this']]
       // },
-      order: [['createdAt', 'DESC']],
       required: false
-    }]
+    }],
+    order: [['createdAt', 'DESC']],
+    limit: 20,
+    offset
   })
   return posts && posts.map(post => post.toJSON())
 }
@@ -34,7 +32,7 @@ async function createOrUpdateUserActivity (body) {
 }
 
 module.exports = {
-  getAllPostForUser,
+  getAllPosts,
   createPostForUser,
   createOrUpdateUserActivity
 }
